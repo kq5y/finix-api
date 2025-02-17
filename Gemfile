@@ -52,6 +52,8 @@ group :production do
   gem "pg", "~> 0.18.4"
 end
 
+gem "dotenv-rails"
+
 # Authentication
 gem "omniauth"
 gem "omniauth-rails_csrf_protection"
