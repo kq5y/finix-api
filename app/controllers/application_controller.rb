@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies
-  before_action :authenticate_request
 
   protected
 
@@ -17,8 +16,20 @@ class ApplicationController < ActionController::API
       unless @user
         raise ActiveRecord::RecordNotFound, "User not found"
       end
-    rescue ActiveRecord::RecordNotFound, JWT::ExpiredSignature, JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+    rescue ActiveRecord::RecordNotFound, JWT::ExpiredSignature, JWT::DecodeError
+      render_error("Unauthorized", :unauthorized)
     end
+  end
+
+  private
+
+  def render_success(data = nil, status = :ok)
+    status_code = Rack::Utils::SYMBOL_TO_STATUS_CODE[status]
+    render json: { meta: { status: status_code }, data: data }, status: status
+  end
+
+  def render_error(code, status = :bad_request)
+    status_code = Rack::Utils::SYMBOL_TO_STATUS_CODE[status]
+    render json: { meta: { status: status_code, error_code: code } }, status: status
   end
 end

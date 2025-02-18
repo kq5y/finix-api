@@ -1,9 +1,11 @@
 class UsersController < ApplicationController
+  before_action :authenticate_request, only: [ :me ]
+
   def me
     if @user
-      render json: { user: @user }
+      render_success({ user: @user })
     else
-      render json: { error: "No user logged in" }, status: :unauthorized
+      render_error("Unauthorized", :unauthorized)
     end
   end
 end
