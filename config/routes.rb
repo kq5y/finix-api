@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
-  get "/auth/discord/callback" => "sessions#create"
-  get "/auth/failure" => "sessions#failure"
+  post "/auth/discord" => "sessions#auth"
+  if Rails.env.development?
+    get "/auth/discord" => "sessions#auth"
+  end
+  get "/auth/discord/callback" => "sessions#callback"
 
   get "/users/me" => "users#me"
 

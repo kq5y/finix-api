@@ -31,7 +31,5 @@ module FinixApi
 
     # Configure the middleware to use cookies
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore,
-      key: "_finix_session"
   end
 end

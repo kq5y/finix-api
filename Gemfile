@@ -54,8 +54,7 @@ end
 
 gem "dotenv-rails"
 
+gem "faraday"
+
 # Authentication
-gem "omniauth"
-gem "omniauth-rails_csrf_protection"
-gem "omniauth-discord"
 gem "jwt"
