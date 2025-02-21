@@ -63,5 +63,7 @@ jobs:
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          APP_BASE_URL: ${{ vars.APP_BASE_URL }}
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
