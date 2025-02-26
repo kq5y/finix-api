@@ -3,6 +3,7 @@ require_relative "boot"
 # require "rails/all"
 
 require "active_record/railtie"
+require "active_model/railtie"
 require "action_controller/railtie"
 require "rails/test_unit/railtie"
 

@@ -16,6 +16,7 @@ finix-api is a REST API for the finix application to manage personal expenses. U
 
 - `APP_BASE_URL`: URL hosting finix-app (ex. http://localhost:3001)
 - `API_BASE_URL`: URL hosting finix-api (ex. http://localhost:3000)
+- `RAILS_MASTER_KEY`: Contents of config/master.key (optional)
 
 ### Secrets
 
