@@ -4,7 +4,7 @@ class CategoriesController < ApplicationController
 
   def index
     @categories = @user.categories
-    render_success({ categories: @categories })
+    render_success({ items: @categories })
   end
 
   def create

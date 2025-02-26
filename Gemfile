@@ -62,3 +62,9 @@ gem "faraday"
 
 # Authentication
 gem "jwt"
+
+# Pagination
+gem "kaminari"
+
+# Search and sort
+gem "ransack"

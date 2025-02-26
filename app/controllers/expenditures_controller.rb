@@ -3,10 +3,36 @@ class ExpendituresController < ApplicationController
   before_action :set_expenditure, only: [ :update, :destroy ]
 
   def index
+    # Check safe params
+    if (params[:start_date] && !params[:start_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
+        (params[:end_date] && !params[:end_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
+        (params[:sort_order] && !Expenditure::VALID_SORT_ORDERS.include?(params[:sort_order].to_sym)) ||
+        (params[:sort_key] && !Expenditure::VALID_SORT_KEYS.include?(params[:sort_key]))
+      render_error("Invalid parameters")
+      return
+    end
+
     @expenditures = @user.expenditures
-    @expenditures = @expenditures.where(date: params[:start_date]..params[:end_date]) if params[:start_date] && params[:end_date]
+
+    # Filter by category, location and payment method
     @expenditures = @expenditures.where(category_id: params[:category_id]) if params[:category_id]
-    render_success({ expenditures: @expenditures })
+    @expenditures = @expenditures.where(location_id: params[:location_id]) if params[:location_id]
+    @expenditures = @expenditures.where(payment_method_id: params[:payment_method_id]) if params[:payment_method_id]
+
+    # Filter by date range
+    @expenditures = @expenditures.where("date >= ?", params[:start_date]) if params[:start_date]
+    @expenditures = @expenditures.where("date <= ?", params[:end_date]) if params[:end_date]
+
+    # Sort
+    @expenditures = @expenditures.apply_sort(params[:sort_key], params[:sort_order])
+
+    # Paginate
+    @expenditures = @expenditures.page(params[:page]).per(params[:page_size])
+
+    render_success({
+      items: @expenditures,
+      total_count: @expenditures.total_count
+    })
   end
 
   def create

@@ -4,7 +4,7 @@ class LocationsController < ApplicationController
 
   def index
     @locations = @user.locations
-    render_success({ locations: @locations })
+    render_success({ items: @locations })
   end
 
   def create
