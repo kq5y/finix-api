@@ -1,0 +1,44 @@
+class PaymentMethodsController < ApplicationController
+  before_action :authenticate_request
+  before_action :set_payment_method, only: [ :update, :destroy ]
+
+  def index
+    @payment_methods = @user.payment_methods
+    render_success({ payment_methods: @payment_methods })
+  end
+
+  def create
+    @payment_method = @user.payment_methods.new(payment_method_params)
+    if @payment_method.save
+      render_success({ payment_method: @payment_method }, :created)
+    else
+      render_error("Payment method not created")
+    end
+  end
+
+  def update
+    if @payment_method.update(payment_method_params)
+      render_success({ payment_method: @payment_method })
+    else
+      render_error("Payment method not updated")
+    end
+  end
+
+  def destroy
+    if @payment_method.destroy
+      render_success()
+    else
+      render_error("Payment method not deleted")
+    end
+  end
+
+  private
+
+  def set_payment_method
+    @payment_method = @user.payment_methods.find(params[:id])
+  end
+
+  def payment_method_params
+    params.require(:payment_method).permit(:name, :method_type)
+  end
+end
