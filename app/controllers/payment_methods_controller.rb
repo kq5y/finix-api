@@ -12,7 +12,7 @@ class PaymentMethodsController < ApplicationController
     if @payment_method.save
       render_success({ payment_method: @payment_method }, :created)
     else
-      render_error("Payment method not created")
+      raise ValidationError.new(@payment_method.errors.full_messages.join(", "))
     end
   end
 
@@ -20,7 +20,7 @@ class PaymentMethodsController < ApplicationController
     if @payment_method.update(payment_method_params)
       render_success({ payment_method: @payment_method })
     else
-      render_error("Payment method not updated")
+      raise ValidationError.new(@payment_method.errors.full_messages.join(", "))
     end
   end
 
@@ -28,7 +28,7 @@ class PaymentMethodsController < ApplicationController
     if @payment_method.destroy
       render_success()
     else
-      render_error("Payment method not deleted")
+      raise ActiveRecord::RecordNotDestroyed.new("Failed to delete payment method", @payment_method)
     end
   end
 

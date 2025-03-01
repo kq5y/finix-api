@@ -12,7 +12,7 @@ class CategoriesController < ApplicationController
     if @category.save
       render_success({ category: @category }, :created)
     else
-      render_error("Category not created")
+      raise ValidationError.new(@category.errors.full_messages.join(", "))
     end
   end
 
@@ -20,7 +20,7 @@ class CategoriesController < ApplicationController
     if @category.update(category_params)
       render_success({ category: @category })
     else
-      render_error("Category not updated")
+      raise ValidationError.new(@category.errors.full_messages.join(", "))
     end
   end
 
@@ -28,7 +28,7 @@ class CategoriesController < ApplicationController
     if @category.destroy
       render_success()
     else
-      render_error("Category not deleted")
+      raise ActiveRecord::RecordNotDestroyed.new("Failed to delete category", @category)
     end
   end
 

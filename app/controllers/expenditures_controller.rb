@@ -8,8 +8,7 @@ class ExpendituresController < ApplicationController
         (params[:end_date] && !params[:end_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
         (params[:sort_order] && !Expenditure::VALID_SORT_ORDERS.include?(params[:sort_order].to_sym)) ||
         (params[:sort_key] && !Expenditure::VALID_SORT_KEYS.include?(params[:sort_key]))
-      render_error("Invalid parameters")
-      return
+      raise ActionController::ParameterMissing.new("Invalid parameters")
     end
 
     @expenditures = @user.expenditures
@@ -40,7 +39,7 @@ class ExpendituresController < ApplicationController
     if @expenditure.save
       render_success({ expenditure: @expenditure }, :created)
     else
-      render_error("Expenditure not created")
+      raise ValidationError.new(@expenditure.errors.full_messages.join(", "))
     end
   end
 
@@ -48,7 +47,7 @@ class ExpendituresController < ApplicationController
     if @expenditure.update(expenditure_params)
       render_success({ expenditure: @expenditure })
     else
-      render_error("Expenditure not updated")
+      raise ValidationError.new(@expenditure.errors.full_messages.join(", "))
     end
   end
 
@@ -56,7 +55,7 @@ class ExpendituresController < ApplicationController
     if @expenditure.destroy
       render_success()
     else
-      render_error("Expenditure not deleted")
+      raise ActiveRecord::RecordNotDestroyed.new("Failed to delete expenditure", @expenditure)
     end
   end
 

@@ -5,7 +5,7 @@ class UsersController < ApplicationController
     if @user
       render_success({ user: @user })
     else
-      render_error("Unauthorized", :unauthorized)
+      raise AuthenticationError.new("ユーザー認証が必要です")
     end
   end
 end

@@ -12,7 +12,7 @@ class LocationsController < ApplicationController
     if @location.save
       render_success({ location: @location }, :created)
     else
-      render_error("Location not created")
+      raise ValidationError.new(@location.errors.full_messages.join(", "))
     end
   end
 
@@ -20,7 +20,7 @@ class LocationsController < ApplicationController
     if @location.update(location_params)
       render_success({ location: @location })
     else
-      render_error("Location not updated")
+      raise ValidationError.new(@location.errors.full_messages.join(", "))
     end
   end
 
@@ -28,7 +28,7 @@ class LocationsController < ApplicationController
     if @location.destroy
       render_success()
     else
-      render_error("Location not deleted")
+      raise ActiveRecord::RecordNotDestroyed.new("Failed to delete location", @location)
     end
   end
 
