@@ -6,13 +6,13 @@ module ResponseHandler
     rescue_from ActionController::ParameterMissing, with: :handle_invalid_parameter
     rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
     rescue_from ActiveRecord::RecordInvalid, with: :handle_validation_error
-    rescue_from JWT::DecodeError, with: :handle_invalid_token
-    rescue_from JWT::ExpiredSignature, with: :handle_expired_token
+    rescue_from JWT::DecodeError, with: :handle_unauthorized
+    rescue_from JWT::ExpiredSignature, with: :handle_unauthorized
 
-    rescue_from ApplicationError, with: :handle_application_error
-    rescue_from ResourceNotFoundError, with: :handle_resource_not_found
-    rescue_from AuthenticationError, with: :handle_authentication_error
-    rescue_from ValidationError, with: :handle_custom_validation_error
+    rescue_from ApplicationError, with: :handle_standard_error
+    rescue_from ResourceNotFoundError, with: :handle_not_found
+    rescue_from AuthenticationError, with: :handle_unauthorized
+    rescue_from ValidationError, with: :handle_validation_error
   end
 
   private
@@ -32,7 +32,7 @@ module ResponseHandler
     error_response = {
       meta: {
         status: status_code,
-        error_message: message
+        error_code: message
       }
     }
     render json: error_response, status: status
@@ -67,45 +67,10 @@ module ResponseHandler
     )
   end
 
-  def handle_invalid_token
+  def handle_unauthorized
     render_error(
       "UNAUTHORIZED",
       :unauthorized
-    )
-  end
-
-  def handle_expired_token
-    render_error(
-      "UNAUTHORIZED",
-      :unauthorized
-    )
-  end
-
-  def handle_application_error(error)
-    render_error(
-      error.message,
-      error.status
-    )
-  end
-
-  def handle_resource_not_found(error)
-    render_error(
-      error.message,
-      :not_found
-    )
-  end
-
-  def handle_authentication_error(error)
-    render_error(
-      error.message,
-      :unauthorized
-    )
-  end
-
-  def handle_custom_validation_error(error)
-    render_error(
-      error.message,
-      :unprocessable_entity
     )
   end
 end

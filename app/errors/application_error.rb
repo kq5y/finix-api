@@ -1,26 +1,23 @@
 class ApplicationError < StandardError
-  attr_reader :status
-
-  def initialize(message = nil, status = :bad_request)
-    @status = status
+  def initialize(message = nil)
     super(message)
   end
 end
 
 class ResourceNotFoundError < ApplicationError
   def initialize(message = "Resource not found")
-    super(message, :not_found)
+    super(message)
   end
 end
 
 class AuthenticationError < ApplicationError
   def initialize(message = "Authentication failed")
-    super(message, :unauthorized)
+    super(message)
   end
 end
 
 class ValidationError < ApplicationError
   def initialize(message = "Validation failed")
-    super(message, :unprocessable_entity)
+    super(message)
   end
 end
