@@ -328,7 +328,7 @@ DEPENDENCIES
   jwt
   kamal
   kaminari
-  pg (~> 1.5.9)
+  pg
   puma (>= 5.0)
   rack-cors
   rails (~> 8.0.1)
