@@ -28,6 +28,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Rails Master Key
+        run: echo $RAILS_MASTER_KEY > config/master.key
+
       - name: Deploy Application
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
