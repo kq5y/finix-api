@@ -17,6 +17,9 @@ proxy:
   ssl: true
   host: api.finix.t3x.jp
 
+  healthcheck:
+    path: /hello
+
 # Credentials for your image host.
 registry:
   # Specify the registry server, if you're not using Docker Hub
@@ -58,7 +61,6 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
-
 
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 # Recommended to change this to a mounted volume path that is backed up off server.
