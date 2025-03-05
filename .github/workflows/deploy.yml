@@ -36,6 +36,11 @@ jobs:
       - name: Rails Master Key
         run: echo $RAILS_MASTER_KEY > config/master.key
 
+      - name: Secrets
+        run: |
+          echo "KAMAL_REGISTRY_PASSWORD=${{ secrets.KAMAL_REGISTRY_PASSWORD }}" >> .kamal/secrets
+          echo "RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}" >> .kamal/secrets
+
       - name: Deploy Application
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
