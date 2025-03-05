@@ -70,6 +70,6 @@ class ExpendituresController < ApplicationController
   end
 
   def expenditure_params
-    params.require(:expenditure).permit(:amount, :description, :date, :category_id)
+    params.expect(expenditure: [ :amount, :description, :date, :category_id, :location_id, :payment_method_id ])
   end
 end

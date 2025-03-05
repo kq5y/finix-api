@@ -50,6 +50,6 @@ class PaymentMethodsController < ApplicationController
   end
 
   def payment_method_params
-    params.require(:payment_method).permit(:name, :method_type)
+    params.expect(category: [ :name, :payment_type ])
   end
 end
