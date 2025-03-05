@@ -2,6 +2,17 @@ class Expenditure < ApplicationRecord
   VALID_SORT_ORDERS = %w[asc desc].freeze
   VALID_SORT_KEYS = %w[id date amount].freeze
 
+  def as_json(options = {})
+    super(options.merge(
+      include: {
+        category: {},
+        location: {},
+        payment_method: {}
+      },
+      except: [ :user_id, :category_id, :location_id, :payment_method_id ]
+    ))
+  end
+
   belongs_to :category
   belongs_to :location
   belongs_to :payment_method
