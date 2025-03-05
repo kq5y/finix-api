@@ -1,16 +1,27 @@
 class CategoriesController < ApplicationController
   before_action :authenticate_request
-  before_action :set_category, only: [ :update, :destroy ]
+  before_action :set_category, only: [ :show, :update, :destroy ]
 
   def index
     @categories = @user.categories
-    render_success({ items: @categories })
+
+    # Sort
+    @categories = @categories.apply_sort(params[:sort_key], params[:sort_order])
+
+    # Paginate
+    @categories = @categories.page(params[:page]).per(params[:page_size])
+
+    render_success({ items: @categories, total_count: @categories.total_count })
+  end
+
+  def show
+    render_success(@category)
   end
 
   def create
     @category = @user.categories.new(category_params)
     if @category.save
-      render_success({ category: @category }, :created)
+      render_success(@category, :created)
     else
       raise ValidationError.new(@category.errors.full_messages.join(", "))
     end
@@ -18,7 +29,7 @@ class CategoriesController < ApplicationController
 
   def update
     if @category.update(category_params)
-      render_success({ category: @category })
+      render_success(@category)
     else
       raise ValidationError.new(@category.errors.full_messages.join(", "))
     end
@@ -39,6 +50,6 @@ class CategoriesController < ApplicationController
   end
 
   def category_params
-    params.require(:category).permit(:name)
+    params.expect(category: [ :name ])
   end
 end

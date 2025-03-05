@@ -9,10 +9,10 @@ Rails.application.routes.draw do
 
   get "/users/me" => "users#me"
 
-  resources :categories, only: [ :index, :create, :update, :destroy ]
-  resources :locations, only: [ :index, :create, :update, :destroy ]
-  resources :payment_methods, only: [ :index, :create, :update, :destroy ]
-  resources :expenditures, only: [ :index, :create, :update, :destroy ]
+  resources :categories, only: [ :index, :show, :create, :update, :destroy ]
+  resources :locations, only: [ :index, :show, :create, :update, :destroy ]
+  resources :payment_methods, only: [ :index, :show, :create, :update, :destroy ]
+  resources :expenditures, only: [ :index, :show, :create, :update, :destroy ]
 
   root to: "error#not_found"
   match "*path" => "error#not_found", via: :all

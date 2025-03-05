@@ -63,6 +63,7 @@ class SessionsController < ApplicationController
     cookies[:user_session] = {
       value: token,
       httponly: true,
+      secure: Rails.env.production?,
       expires: 1.day.from_now
     }
   end

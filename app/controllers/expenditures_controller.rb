@@ -1,6 +1,6 @@
 class ExpendituresController < ApplicationController
   before_action :authenticate_request
-  before_action :set_expenditure, only: [ :update, :destroy ]
+  before_action :set_expenditure, only: [ :show, :update, :destroy ]
 
   def index
     # Check safe params
@@ -34,10 +34,14 @@ class ExpendituresController < ApplicationController
     })
   end
 
+  def show
+    render_success(@expenditure)
+  end
+
   def create
     @expenditure = @user.expenditures.new(expenditure_params)
     if @expenditure.save
-      render_success({ expenditure: @expenditure }, :created)
+      render_success(@expenditure, :created)
     else
       raise ValidationError.new(@expenditure.errors.full_messages.join(", "))
     end
@@ -45,7 +49,7 @@ class ExpendituresController < ApplicationController
 
   def update
     if @expenditure.update(expenditure_params)
-      render_success({ expenditure: @expenditure })
+      render_success(@expenditure)
     else
       raise ValidationError.new(@expenditure.errors.full_messages.join(", "))
     end
@@ -66,6 +70,6 @@ class ExpendituresController < ApplicationController
   end
 
   def expenditure_params
-    params.require(:expenditure).permit(:amount, :description, :date, :category_id)
+    params.expect(expenditure: [ :amount, :description, :date, :category_id, :location_id, :payment_method_id ])
   end
 end

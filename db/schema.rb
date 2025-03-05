@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_22_135734) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_05_162839) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.integer "user_id", null: false
@@ -23,13 +23,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_22_135734) do
     t.decimal "amount"
     t.text "description"
     t.date "date"
-    t.integer "category_id", null: false
-    t.integer "location_id", null: false
+    t.integer "category_id"
+    t.integer "location_id"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "payment_method_id"
     t.index ["category_id"], name: "index_expenditures_on_category_id"
     t.index ["location_id"], name: "index_expenditures_on_location_id"
+    t.index ["payment_method_id"], name: "index_expenditures_on_payment_method_id"
     t.index ["user_id"], name: "index_expenditures_on_user_id"
   end
 
@@ -61,6 +63,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_22_135734) do
   add_foreign_key "categories", "users"
   add_foreign_key "expenditures", "categories"
   add_foreign_key "expenditures", "locations"
+  add_foreign_key "expenditures", "payment_methods"
   add_foreign_key "expenditures", "users"
   add_foreign_key "locations", "users"
   add_foreign_key "payment_methods", "users"

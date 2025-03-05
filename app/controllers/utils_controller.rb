@@ -1,5 +1,5 @@
 class UtilsController < ApplicationController
   def hello
-    render_success("hello")
+    render_success()
   end
 end
