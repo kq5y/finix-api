@@ -4,7 +4,7 @@ class LocationsController < ApplicationController
 
   def index
     @locations = @user.locations
-    render_success({ items: @locations })
+    render_success({ items: @locations, total_count: @locations.total_count })
   end
 
   def show

@@ -4,7 +4,7 @@ class CategoriesController < ApplicationController
 
   def index
     @categories = @user.categories
-    render_success({ items: @categories })
+    render_success({ items: @categories, total_count: @categories.total_count })
   end
 
   def show

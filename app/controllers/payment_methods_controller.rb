@@ -4,7 +4,7 @@ class PaymentMethodsController < ApplicationController
 
   def index
     @payment_methods = @user.payment_methods
-    render_success({ items: @payment_methods })
+    render_success({ items: @payment_methods, total_count: @payment_methods.total_count })
   end
 
   def show
