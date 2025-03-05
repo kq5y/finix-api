@@ -62,6 +62,7 @@ module ResponseHandler
   end
 
   def handle_validation_error(error)
+    Rails.logger.error "Validation error: #{error.message}"
     render_error(
       "VALIDATION_ERROR",
       :bad_request
