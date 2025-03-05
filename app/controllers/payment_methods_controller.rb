@@ -1,16 +1,20 @@
 class PaymentMethodsController < ApplicationController
   before_action :authenticate_request
-  before_action :set_payment_method, only: [ :update, :destroy ]
+  before_action :set_payment_method, only: [ :show, :update, :destroy ]
 
   def index
     @payment_methods = @user.payment_methods
     render_success({ items: @payment_methods })
   end
 
+  def show
+    render_success(@payment_method)
+  end
+
   def create
     @payment_method = @user.payment_methods.new(payment_method_params)
     if @payment_method.save
-      render_success({ payment_method: @payment_method }, :created)
+      render_success(@payment_method, :created)
     else
       raise ValidationError.new(@payment_method.errors.full_messages.join(", "))
     end
@@ -18,7 +22,7 @@ class PaymentMethodsController < ApplicationController
 
   def update
     if @payment_method.update(payment_method_params)
-      render_success({ payment_method: @payment_method })
+      render_success(@payment_method)
     else
       raise ValidationError.new(@payment_method.errors.full_messages.join(", "))
     end

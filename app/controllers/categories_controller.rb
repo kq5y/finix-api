@@ -1,16 +1,20 @@
 class CategoriesController < ApplicationController
   before_action :authenticate_request
-  before_action :set_category, only: [ :update, :destroy ]
+  before_action :set_category, only: [ :show, :update, :destroy ]
 
   def index
     @categories = @user.categories
     render_success({ items: @categories })
   end
 
+  def show
+    render_success(@category)
+  end
+
   def create
     @category = @user.categories.new(category_params)
     if @category.save
-      render_success({ category: @category }, :created)
+      render_success(@category, :created)
     else
       raise ValidationError.new(@category.errors.full_messages.join(", "))
     end
@@ -18,7 +22,7 @@ class CategoriesController < ApplicationController
 
   def update
     if @category.update(category_params)
-      render_success({ category: @category })
+      render_success(@category)
     else
       raise ValidationError.new(@category.errors.full_messages.join(", "))
     end
