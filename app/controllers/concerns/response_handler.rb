@@ -19,12 +19,13 @@ module ResponseHandler
 
   def render_success(data = nil, status = :ok)
     status_code = Rack::Utils::SYMBOL_TO_STATUS_CODE[status]
-    render json: {
+    response = {
       meta: {
         status: status_code
-      },
-      data: data
-    }, status: status
+      }
+    }
+    response[:data] = data if data
+    render json: response, status: status
   end
 
   def render_error(message, status = :bad_request)
