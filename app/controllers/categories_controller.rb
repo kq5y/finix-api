@@ -4,6 +4,13 @@ class CategoriesController < ApplicationController
 
   def index
     @categories = @user.categories
+
+    # Sort
+    @categories = @categories.apply_sort(params[:sort_key], params[:sort_order])
+
+    # Paginate
+    @categories = @categories.page(params[:page]).per(params[:page_size])
+
     render_success({ items: @categories, total_count: @categories.total_count })
   end
 

@@ -1,6 +1,6 @@
 class Expenditure < ApplicationRecord
-  VALID_SORT_ORDERS = %i[asc desc].freeze
-  VALID_SORT_KEYS = %w[date amount].freeze
+  VALID_SORT_ORDERS = %w[asc desc].freeze
+  VALID_SORT_KEYS = %w[id date amount].freeze
 
   belongs_to :category
   belongs_to :location

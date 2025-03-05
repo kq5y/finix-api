@@ -4,6 +4,13 @@ class PaymentMethodsController < ApplicationController
 
   def index
     @payment_methods = @user.payment_methods
+
+    # Sort
+    @payment_methods = @payment_methods.apply_sort(params[:sort_key], params[:sort_order])
+
+    # Paginate
+    @payment_methods = @payment_methods.page(params[:page]).per(params[:page_size])
+
     render_success({ items: @payment_methods, total_count: @payment_methods.total_count })
   end
 

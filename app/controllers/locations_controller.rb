@@ -4,6 +4,13 @@ class LocationsController < ApplicationController
 
   def index
     @locations = @user.locations
+
+    # Sort
+    @locations = @locations.apply_sort(params[:sort_key], params[:sort_order])
+
+    # Paginate
+    @locations = @locations.page(params[:page]).per(params[:page_size])
+
     render_success({ items: @locations, total_count: @locations.total_count })
   end
 
