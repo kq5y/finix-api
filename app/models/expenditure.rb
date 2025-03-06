@@ -5,11 +5,11 @@ class Expenditure < ApplicationRecord
   def as_json(options = {})
     super(options.merge(
       include: {
-        category: { except: :user_id },
-        location: { except: :user_id },
-        payment_method: { except: :user_id }
+        category: { except: [ :user_id, :discarded_at ] },
+        location: { except: [ :user_id, :discarded_at ] },
+        payment_method: { except: [ :user_id, :discarded_at ] }
       },
-      except: [ :user_id, :category_id, :location_id, :payment_method_id ]
+      except: [ :user_id, :category_id, :location_id, :payment_method_id, :discarded_at ]
     ))
   end
 

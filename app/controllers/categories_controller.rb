@@ -36,10 +36,10 @@ class CategoriesController < ApplicationController
   end
 
   def destroy
-    if @category.destroy
-      render_success()
+    if @category.discard
+      render_success(nil, :no_content)
     else
-      raise ActiveRecord::RecordNotDestroyed.new("Failed to delete category", @category)
+      raise Discard::RecordNotDiscarded.new("Failed to delete category", @category)
     end
   end
 

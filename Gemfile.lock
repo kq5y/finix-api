@@ -90,6 +90,8 @@ GEM
     debug (1.10.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    discard (1.4.0)
+      activerecord (>= 4.2, < 9.0)
     dotenv (3.1.7)
     dotenv-rails (3.1.7)
       dotenv (= 3.1.7)
@@ -323,6 +325,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  discard (~> 1.4)
   dotenv-rails
   faraday
   jwt

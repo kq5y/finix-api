@@ -6,6 +6,7 @@ module ResponseHandler
     rescue_from ActionController::ParameterMissing, with: :handle_invalid_parameter
     rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
     rescue_from ActiveRecord::RecordInvalid, with: :handle_validation_error
+    rescue_from Discard::RecordNotDiscarded, with: :handle_destroy_error
     rescue_from JWT::DecodeError, with: :handle_unauthorized
     rescue_from JWT::ExpiredSignature, with: :handle_unauthorized
 
@@ -47,14 +48,14 @@ module ResponseHandler
     )
   end
 
-  def handle_invalid_parameter(error)
+  def handle_invalid_parameter
     render_error(
       "INVALID_PARAMETER",
       :bad_request
     )
   end
 
-  def handle_not_found(error)
+  def handle_not_found
     render_error(
       "NOT_FOUND",
       :not_found
@@ -66,6 +67,13 @@ module ResponseHandler
     render_error(
       "VALIDATION_ERROR",
       :bad_request
+    )
+  end
+
+  def handle_destroy_error
+    render_error(
+      "CANNOT_DELETE",
+      :unprocessable_content
     )
   end
 

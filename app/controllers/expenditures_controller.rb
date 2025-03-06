@@ -56,10 +56,10 @@ class ExpendituresController < ApplicationController
   end
 
   def destroy
-    if @expenditure.destroy
-      render_success()
+    if @expenditure.discard
+      render_success(nil, :no_content)
     else
-      raise ActiveRecord::RecordNotDestroyed.new("Failed to delete expenditure", @expenditure)
+      raise Discard::RecordNotDiscarded.new("Failed to delete expenditure", @expenditure)
     end
   end
 

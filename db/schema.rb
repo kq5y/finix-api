@@ -10,12 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_05_162839) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_06_042053) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.string "color", default: "#D3D3D3", null: false
+    t.index ["discarded_at"], name: "index_categories_on_discarded_at"
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
@@ -29,7 +32,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_05_162839) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "payment_method_id"
+    t.datetime "discarded_at"
     t.index ["category_id"], name: "index_expenditures_on_category_id"
+    t.index ["discarded_at"], name: "index_expenditures_on_discarded_at"
     t.index ["location_id"], name: "index_expenditures_on_location_id"
     t.index ["payment_method_id"], name: "index_expenditures_on_payment_method_id"
     t.index ["user_id"], name: "index_expenditures_on_user_id"
@@ -40,6 +45,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_05_162839) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_locations_on_discarded_at"
     t.index ["user_id"], name: "index_locations_on_user_id"
   end
 
@@ -49,6 +56,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_05_162839) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_payment_methods_on_discarded_at"
     t.index ["user_id"], name: "index_payment_methods_on_user_id"
   end
 
@@ -58,6 +67,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_05_162839) do
     t.string "avatar"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_users_on_discarded_at"
   end
 
   add_foreign_key "categories", "users"
