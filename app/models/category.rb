@@ -2,6 +2,8 @@ class Category < ApplicationRecord
   VALID_SORT_ORDERS = %w[asc desc].freeze
   VALID_SORT_KEYS = %w[id].freeze
 
+  validates :color, format: { with: /\A#[0-9A-Fa-f]{6}\z/, message: "must be a valid hex color code (e.g. #FF0000)" }
+
   def as_json(options = {})
     super(options.merge(except: [ :user_id, :discarded_at ]))
   end
