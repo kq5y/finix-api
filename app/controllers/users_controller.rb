@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
   def me
     if @user
-      render_success({ user: @user })
+      render_success(@user)
     else
       raise AuthenticationError.new("ユーザー認証が必要です")
     end
