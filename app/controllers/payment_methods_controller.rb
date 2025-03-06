@@ -50,6 +50,6 @@ class PaymentMethodsController < ApplicationController
   end
 
   def payment_method_params
-    params.expect(category: [ :name, :payment_type ])
+    params.expect(payment_method: [ :name, :payment_type ])
   end
 end
