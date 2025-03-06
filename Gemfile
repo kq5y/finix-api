@@ -58,10 +58,12 @@ end
 
 gem "dotenv-rails"
 
-gem "faraday"
-
 # Authentication
 gem "jwt"
+gem "faraday"
+
+# Soft delete
+gem "discard", "~> 1.4"
 
 # Pagination
 gem "kaminari"

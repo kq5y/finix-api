@@ -3,12 +3,19 @@ class Location < ApplicationRecord
   VALID_SORT_KEYS = %w[id].freeze
 
   def as_json(options = {})
-    super(options.merge(except: [ :user_id ]))
+    super(options.merge(except: [ :user_id, :discarded_at ]))
   end
 
   belongs_to :user
   has_many :expenditures
   validates :name, presence: true, uniqueness: { scope: :user_id }
+
+  before_discard do
+    if expenditures.exists?
+      errors.add(:base, "Cannot delete category with expenditures")
+      throw :abort
+    end
+  end
 
   scope :apply_sort, ->(sort_key, sort_order) {
     sort_key = sort_key.presence_in(VALID_SORT_KEYS) || "id"
