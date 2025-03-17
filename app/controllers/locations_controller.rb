@@ -37,7 +37,7 @@ class LocationsController < ApplicationController
 
   def destroy
     if @location.discard
-      render_success(nil, :no_content)
+      render_success(nil)
     else
       raise Discard::RecordNotDiscarded.new("Failed to delete location", @location)
     end

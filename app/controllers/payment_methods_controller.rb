@@ -37,7 +37,7 @@ class PaymentMethodsController < ApplicationController
 
   def destroy
     if @payment_method.discard
-      render_success(nil, :no_content)
+      render_success(nil)
     else
       raise Discard::RecordNotDiscarded.new("Failed to delete payment method", @payment_method)
     end
