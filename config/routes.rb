@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     get "/auth/discord" => "sessions#auth"
   end
   get "/auth/discord/callback" => "sessions#callback"
+  get "/logout" => "sessions#logout"
 
   get "/users/me" => "users#me"
 

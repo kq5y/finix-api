@@ -7,6 +7,11 @@ class SessionsController < ApplicationController
     redirect_callback("error", 500)
   end
 
+  def logout
+    cookies.delete(:user_session)
+    redirect_callback("logout")
+  end
+
   def callback
     handle_callback
   rescue DiscordAuthService::InvalidTokenError
