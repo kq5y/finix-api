@@ -1,12 +1,13 @@
+# Model for User
 class User < ApplicationRecord
   def as_json(options = {})
-    super(options.merge(except: [ :discarded_at ]))
+    super(options.merge(except: [:discarded_at]))
   end
 
-  has_many :categories
-  has_many :locations
-  has_many :payment_methods
-  has_many :expenditures
+  has_many :categories, dependent: nil
+  has_many :locations, dependent: nil
+  has_many :payment_methods, dependent: nil
+  has_many :expenditures, dependent: nil
   validates :uid, uniqueness: true
   validates :username, presence: true
 

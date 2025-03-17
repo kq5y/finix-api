@@ -1,14 +1,15 @@
+# Controller for expenditure model
 class ExpendituresController < ApplicationController
   before_action :authenticate_request
-  before_action :set_expenditure, only: [ :show, :update, :destroy ]
+  before_action :set_expenditure, only: %i[show update destroy]
 
   def index
     # Check safe params
     if (params[:start_date] && !params[:start_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
-        (params[:end_date] && !params[:end_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
-        (params[:sort_order] && !Expenditure::VALID_SORT_ORDERS.include?(params[:sort_order].to_sym)) ||
-        (params[:sort_key] && !Expenditure::VALID_SORT_KEYS.include?(params[:sort_key]))
-      raise ActionController::ParameterMissing.new("Invalid parameters")
+       (params[:end_date] && !params[:end_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
+       (params[:sort_order] && Expenditure::VALID_SORT_ORDERS.exclude?(params[:sort_order].to_sym)) ||
+       (params[:sort_key] && Expenditure::VALID_SORT_KEYS.exclude?(params[:sort_key]))
+      raise ActionController::ParameterMissing, "Invalid parameters"
     end
 
     @expenditures = @user.expenditures
@@ -19,8 +20,8 @@ class ExpendituresController < ApplicationController
     @expenditures = @expenditures.where(payment_method_id: params[:payment_method_id]) if params[:payment_method_id]
 
     # Filter by date range
-    @expenditures = @expenditures.where("date >= ?", params[:start_date]) if params[:start_date]
-    @expenditures = @expenditures.where("date <= ?", params[:end_date]) if params[:end_date]
+    @expenditures = @expenditures.where(date: (params[:start_date])..) if params[:start_date]
+    @expenditures = @expenditures.where(date: ..(params[:end_date])) if params[:end_date]
 
     # Sort
     @expenditures = @expenditures.apply_sort(params[:sort_key], params[:sort_order])
@@ -28,10 +29,7 @@ class ExpendituresController < ApplicationController
     # Paginate
     @expenditures = @expenditures.page(params[:page]).per(params[:page_size])
 
-    render_success({
-      items: @expenditures,
-      total_count: @expenditures.total_count
-    })
+    render_success({ items: @expenditures, total_count: @expenditures.total_count })
   end
 
   def show
@@ -40,27 +38,21 @@ class ExpendituresController < ApplicationController
 
   def create
     @expenditure = @user.expenditures.new(expenditure_params)
-    if @expenditure.save
-      render_success(@expenditure, :created)
-    else
-      raise ValidationError.new(@expenditure.errors.full_messages.join(", "))
-    end
+    raise ValidationError, @expenditure.errors.full_messages.join(", ") unless @expenditure.save
+
+    render_success(@expenditure, :created)
   end
 
   def update
-    if @expenditure.update(expenditure_params)
-      render_success(@expenditure)
-    else
-      raise ValidationError.new(@expenditure.errors.full_messages.join(", "))
-    end
+    raise ValidationError, @expenditure.errors.full_messages.join(", ") unless @expenditure.update(expenditure_params)
+
+    render_success(@expenditure)
   end
 
   def destroy
-    if @expenditure.discard
-      render_success(nil)
-    else
-      raise Discard::RecordNotDiscarded.new("Failed to delete expenditure", @expenditure)
-    end
+    raise Discard::RecordNotDiscarded.new("Failed to delete expenditure", @expenditure) unless @expenditure.discard
+
+    render_success(nil)
   end
 
   private
@@ -70,6 +62,6 @@ class ExpendituresController < ApplicationController
   end
 
   def expenditure_params
-    params.expect(expenditure: [ :amount, :description, :date, :category_id, :location_id, :payment_method_id ])
+    params.expect(expenditure: %i[amount description date category_id location_id payment_method_id])
   end
 end

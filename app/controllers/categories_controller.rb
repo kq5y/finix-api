@@ -1,6 +1,7 @@
+# Controller for category model
 class CategoriesController < ApplicationController
   before_action :authenticate_request
-  before_action :set_category, only: [ :show, :update, :destroy ]
+  before_action :set_category, only: %i[show update destroy]
 
   def index
     @categories = @user.categories
@@ -20,27 +21,21 @@ class CategoriesController < ApplicationController
 
   def create
     @category = @user.categories.new(category_params)
-    if @category.save
-      render_success(@category, :created)
-    else
-      raise ValidationError.new(@category.errors.full_messages.join(", "))
-    end
+    raise ValidationError, @category.errors.full_messages.join(", ") unless @category.save
+
+    render_success(@category, :created)
   end
 
   def update
-    if @category.update(category_params)
-      render_success(@category)
-    else
-      raise ValidationError.new(@category.errors.full_messages.join(", "))
-    end
+    raise ValidationError, @category.errors.full_messages.join(", ") unless @category.update(category_params)
+
+    render_success(@category)
   end
 
   def destroy
-    if @category.discard
-      render_success(nil)
-    else
-      raise Discard::RecordNotDiscarded.new("Failed to delete category", @category)
-    end
+    raise Discard::RecordNotDiscarded.new("Failed to delete category", @category) unless @category.discard
+
+    render_success(nil)
   end
 
   private
@@ -50,6 +45,6 @@ class CategoriesController < ApplicationController
   end
 
   def category_params
-    params.expect(category: [ :name ])
+    params.expect(category: [:name])
   end
 end

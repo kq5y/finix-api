@@ -1,6 +1,7 @@
+# Controller for location model
 class LocationsController < ApplicationController
   before_action :authenticate_request
-  before_action :set_location, only: [ :show, :update, :destroy ]
+  before_action :set_location, only: %i[show update destroy]
 
   def index
     @locations = @user.locations
@@ -20,27 +21,21 @@ class LocationsController < ApplicationController
 
   def create
     @location = @user.locations.new(location_params)
-    if @location.save
-      render_success(@location, :created)
-    else
-      raise ValidationError.new(@location.errors.full_messages.join(", "))
-    end
+    raise ValidationError, @location.errors.full_messages.join(", ") unless @location.save
+
+    render_success(@location, :created)
   end
 
   def update
-    if @location.update(location_params)
-      render_success(@location)
-    else
-      raise ValidationError.new(@location.errors.full_messages.join(", "))
-    end
+    raise ValidationError, @location.errors.full_messages.join(", ") unless @location.update(location_params)
+
+    render_success(@location)
   end
 
   def destroy
-    if @location.discard
-      render_success(nil)
-    else
-      raise Discard::RecordNotDiscarded.new("Failed to delete location", @location)
-    end
+    raise Discard::RecordNotDiscarded.new("Failed to delete location", @location) unless @location.discard
+
+    render_success(nil)
   end
 
   private
@@ -50,6 +45,6 @@ class LocationsController < ApplicationController
   end
 
   def location_params
-    params.expect(location: [ :name ])
+    params.expect(location: [:name])
   end
 end

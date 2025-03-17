@@ -1,3 +1,4 @@
+# Module for handling response and error messages
 module ResponseHandler
   extend ActiveSupport::Concern
 

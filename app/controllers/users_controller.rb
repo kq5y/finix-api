@@ -1,11 +1,10 @@
+# Controller for user model
 class UsersController < ApplicationController
-  before_action :authenticate_request, only: [ :me ]
+  before_action :authenticate_request, only: %i[me]
 
   def me
-    if @user
-      render_success(@user)
-    else
-      raise AuthenticationError.new("ユーザー認証が必要です")
-    end
+    raise AuthenticationError, "ユーザー認証が必要です" unless @user
+
+    render_success(@user)
   end
 end

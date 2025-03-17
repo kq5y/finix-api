@@ -21,28 +21,18 @@ end
 
 # Validate URLs format
 [
-  [ "API_BASE_URL", ENV["API_BASE_URL"] ],
-  [ "APP_BASE_URL", ENV["APP_BASE_URL"] ]
+  ["API_BASE_URL", ENV.fetch("API_BASE_URL", nil)],
+  ["APP_BASE_URL", ENV.fetch("APP_BASE_URL", nil)]
 ].each do |name, url|
-  begin
-    uri = URI.parse(url)
-    unless uri.scheme&.start_with?("http")
-      raise "Must be an HTTP(S) URL"
-    end
-  rescue URI::InvalidURIError, ArgumentError => e
-    raise "Invalid #{name}: #{e.message}"
-  end
+  uri = URI.parse(url)
+  raise "Must be an HTTP(S) URL" unless uri.scheme&.start_with?("http")
+rescue URI::InvalidURIError, ArgumentError => e
+  raise "Invalid #{name}: #{e.message}"
 end
 
 # Validate required credentials
-unless Rails.application.credentials.discord&.dig(:client_id)
-  raise "Missing Discord client_id in credentials"
-end
+raise "Missing Discord client_id in credentials" unless Rails.application.credentials.discord&.dig(:client_id)
 
-unless Rails.application.credentials.discord&.dig(:client_secret)
-  raise "Missing Discord client_secret in credentials"
-end
+raise "Missing Discord client_secret in credentials" unless Rails.application.credentials.discord&.dig(:client_secret)
 
-unless Rails.application.credentials.jwt&.dig(:secret_key)
-  raise "Missing JWT secret_key in credentials"
-end
+raise "Missing JWT secret_key in credentials" unless Rails.application.credentials.jwt&.dig(:secret_key)

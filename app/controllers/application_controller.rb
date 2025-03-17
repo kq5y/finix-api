@@ -1,3 +1,4 @@
+# Base controller for all controllers in the application.
 class ApplicationController < ActionController::API
   include ActionController::Cookies
   include ResponseHandler

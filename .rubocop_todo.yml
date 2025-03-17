@@ -1,0 +1,66 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+AllCops:
+  NewCops: enable
+  SuggestExtensions: true
+Rails:
+  Enabled: true
+
+inherit_mode:
+  merge:
+    - Exclude
+
+Metrics/ClassLength:
+  Max: 120
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+    - method_call
+Metrics/MethodLength:
+  Max: 20
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+    - method_call
+Metrics/ModuleLength:
+  Max: 200
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+    - method_call
+Metrics/BlockLength:
+  Max: 50
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+    - method_call
+  Exclude:
+    - "spec/**/*"
+    - "test/**/*"
+Metrics/ParameterLists:
+  Max: 5
+  MaxOptionalParameters: 3
+
+Metrics/AbcSize:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
+
+Rails/I18nLocaleTexts:
+  Enabled: false
