@@ -276,6 +276,9 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
+    rubocop-rspec (3.5.0)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
     sqlite3 (2.6.0-aarch64-linux-gnu)
@@ -337,7 +340,10 @@ DEPENDENCIES
   rails (~> 8.0.2)
   ransack
   rubocop
+  rubocop-performance
+  rubocop-rails
   rubocop-rails-omakase
+  rubocop-rspec
   sqlite3 (>= 2.1)
   thruster
   tzinfo-data
