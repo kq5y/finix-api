@@ -1,5 +1,6 @@
+# Error class for validation error
 class ValidationError < ApplicationError
   def initialize(message = "Validation failed")
-    super(message)
+    super
   end
 end

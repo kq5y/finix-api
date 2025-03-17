@@ -1,3 +1,4 @@
+# Controller for handling user authentication and session management.
 class SessionsController < ApplicationController
   def auth
     auth_service = DiscordAuthService.new
@@ -34,7 +35,7 @@ class SessionsController < ApplicationController
   private
 
   def handle_callback
-    if params[:error].present? || !params[:code].present?
+    if params[:error].present? || params[:code].blank?
       redirect_callback("error", 400)
       return
     end
@@ -45,7 +46,8 @@ class SessionsController < ApplicationController
     user = find_or_create_user(user_data)
     token = generate_token(user.uid)
 
-    set_session_cookie(token)
+    # Needs refactoring
+    self.session_cookie = token
     redirect_callback(user.created_at == user.updated_at ? "signup" : "login")
   end
 
@@ -64,7 +66,7 @@ class SessionsController < ApplicationController
     user
   end
 
-  def set_session_cookie(token)
+  def session_cookie=(token)
     cookies[:user_session] = {
       value: token,
       httponly: true,
@@ -74,7 +76,7 @@ class SessionsController < ApplicationController
   end
 
   def redirect_callback(type, code = nil)
-    url = "#{ENV['APP_BASE_URL']}/login/callback"
+    url = "#{ENV.fetch('APP_BASE_URL', nil)}/login/callback"
     params = { type: type }
     params[:code] = code if code.present?
 
@@ -82,7 +84,7 @@ class SessionsController < ApplicationController
   end
 
   def generate_token(uid)
-    exp = Time.now.to_i + 24 * 3600
+    exp = Time.now.to_i + (24 * 3600)
     payload = { uid: uid, exp: exp }
     JWT.encode(payload, Rails.application.credentials.jwt.secret_key, "HS256")
   end

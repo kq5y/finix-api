@@ -1,3 +1,4 @@
+# Model for Expenditure
 class Expenditure < ApplicationRecord
   VALID_SORT_ORDERS = %w[asc desc].freeze
   VALID_SORT_KEYS = %w[id date amount].freeze
@@ -5,11 +6,11 @@ class Expenditure < ApplicationRecord
   def as_json(options = {})
     super(options.merge(
       include: {
-        category: { except: [ :user_id, :discarded_at ] },
-        location: { except: [ :user_id, :discarded_at ] },
-        payment_method: { except: [ :user_id, :discarded_at ] }
+        category: { except: %i[user_id discarded_at] },
+        location: { except: %i[user_id discarded_at] },
+        payment_method: { except: %i[user_id discarded_at] }
       },
-      except: [ :user_id, :category_id, :location_id, :payment_method_id, :discarded_at ]
+      except: %i[user_id category_id location_id payment_method_id discarded_at]
     ))
   end
 
@@ -23,7 +24,7 @@ class Expenditure < ApplicationRecord
   validate :validate_location_ownership
   validate :validate_payment_method_ownership
 
-  scope :apply_sort, ->(sort_key, sort_order) {
+  scope :apply_sort, lambda { |sort_key, sort_order|
     sort_key = sort_key.presence_in(VALID_SORT_KEYS) || "date"
     sort_order = sort_order.presence_in(VALID_SORT_ORDERS) || "desc"
     order(sort_key => sort_order)
@@ -32,20 +33,23 @@ class Expenditure < ApplicationRecord
   private
 
   def validate_category_ownership
-    return unless category_id.present?
+    return if category_id.blank?
     return if user.categories.exists?(id: category_id)
+
     errors.add(:category, "must belong to the current user")
   end
 
   def validate_location_ownership
-    return unless location_id.present?
+    return if location_id.blank?
     return if user.locations.exists?(id: location_id)
+
     errors.add(:location, "must belong to the current user")
   end
 
   def validate_payment_method_ownership
-    return unless payment_method_id.present?
+    return if payment_method_id.blank?
     return if user.payment_methods.exists?(id: payment_method_id)
+
     errors.add(:payment_method, "must belong to the current user")
   end
 end

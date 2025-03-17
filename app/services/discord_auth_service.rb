@@ -1,3 +1,4 @@
+# Service class for Discord OAuth2 authentication
 class DiscordAuthService
   class Error < StandardError; end
   class InvalidTokenError < Error; end
@@ -36,40 +37,39 @@ class DiscordAuthService
 
   def validate_environment_variables!
     missing_vars = []
-    missing_vars << "API_BASE_URL" unless ENV["API_BASE_URL"].present?
-    missing_vars << "Discord client_id" unless client_id.present?
-    missing_vars << "Discord client_secret" unless client_secret.present?
+    missing_vars << "API_BASE_URL" if ENV["API_BASE_URL"].blank?
+    missing_vars << "Discord client_id" if client_id.blank?
+    missing_vars << "Discord client_secret" if client_secret.blank?
 
-    if missing_vars.any?
-      raise Error, "Missing required environment variables: #{missing_vars.join(', ')}"
-    end
+    return unless missing_vars.any?
+
+    raise Error, "Missing required environment variables: #{missing_vars.join(', ')}"
   end
 
   def fetch_token(code)
-    response = @connection.post("/api/oauth2/token", {
-      client_id: client_id,
-      client_secret: client_secret,
-      grant_type: "authorization_code",
-      code: code,
-      redirect_uri: callback_url
-    }, {
-      "Content-Type" => "application/x-www-form-urlencoded"
-    })
+    response = @connection.post(
+      "/api/oauth2/token",
+      {
+        client_id: client_id,
+        client_secret: client_secret,
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: callback_url
+      }, {
+        "Content-Type" => "application/x-www-form-urlencoded"
+      }
+    )
 
     validate_response!(response)
     parsed_response = parse_json(response.body)
 
-    unless parsed_response["access_token"].present?
-      raise InvalidTokenError, "Access token not found in response"
-    end
+    raise InvalidTokenError, "Access token not found in response" if parsed_response["access_token"].blank?
 
     parsed_response["access_token"]
   end
 
   def fetch_user_info(access_token)
-    response = @connection.get("/api/users/@me", nil, {
-      "Authorization" => "Bearer #{access_token}"
-    })
+    response = @connection.get("/api/users/@me", nil, { "Authorization" => "Bearer #{access_token}" })
 
     validate_response!(response)
     user_info = parse_json(response.body)
@@ -79,18 +79,18 @@ class DiscordAuthService
   end
 
   def validate_response!(response)
-    unless response.success?
-      raise ApiError, "Discord API error: #{response.status} - #{response.body}"
-    end
+    return if response.success?
+
+    raise ApiError, "Discord API error: #{response.status} - #{response.body}"
   end
 
   def validate_user_info!(user_info)
-    required_fields = [ "id", "username", "avatar" ]
+    required_fields = %w[id username avatar]
     missing_fields = required_fields.select { |field| user_info[field].nil? }
 
-    if missing_fields.any?
-      raise InvalidUserError, "Missing required user fields: #{missing_fields.join(', ')}"
-    end
+    return unless missing_fields.any?
+
+    raise InvalidUserError, "Missing required user fields: #{missing_fields.join(', ')}"
   end
 
   def parse_json(body)
@@ -111,7 +111,7 @@ class DiscordAuthService
   end
 
   def callback_url
-    "#{ENV['API_BASE_URL']}/auth/discord/callback"
+    "#{ENV.fetch('API_BASE_URL', nil)}/auth/discord/callback"
   end
 
   def client_id
