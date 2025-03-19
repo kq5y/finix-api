@@ -6,9 +6,7 @@ class ExpendituresController < ApplicationController
   def index
     # Check safe params
     if (params[:start_date] && !params[:start_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
-       (params[:end_date] && !params[:end_date].match(/\A\d{4}-\d{2}-\d{2}\z/)) ||
-       (params[:sort_order] && Expenditure::VALID_SORT_ORDERS.exclude?(params[:sort_order].to_sym)) ||
-       (params[:sort_key] && Expenditure::VALID_SORT_KEYS.exclude?(params[:sort_key]))
+       (params[:end_date] && !params[:end_date].match(/\A\d{4}-\d{2}-\d{2}\z/))
       raise ActionController::ParameterMissing, "Invalid parameters"
     end
 
