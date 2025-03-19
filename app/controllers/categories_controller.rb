@@ -45,6 +45,6 @@ class CategoriesController < ApplicationController
   end
 
   def category_params
-    params.expect(category: [:name])
+    params.expect(category: %i[name color])
   end
 end
