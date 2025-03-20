@@ -3,14 +3,14 @@ class SummaryController < ApplicationController
   before_action :authenticate_request, only: %i[index]
 
   def index
-    render json: {
-      overview: calculate_overview,
-      trends: calculate_trends,
-      categories: calculate_categories,
-      payment_methods: calculate_payment_methods,
-      locations: calculate_locations,
-      recent_expenditures: fetch_recent_expenditures
-    }
+    render_success({
+                     overview: calculate_overview,
+                     trends: calculate_trends,
+                     categories: calculate_categories,
+                     payment_methods: calculate_payment_methods,
+                     locations: calculate_locations,
+                     recent_expenditures: fetch_recent_expenditures
+                   })
   end
 
   private
