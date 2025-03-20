@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   get "/users/me" => "users#me"
 
+  get "/summary" => "summary#index"
+
   resources :categories, only: %i[index show create update destroy]
   resources :locations, only: %i[index show create update destroy]
   resources :payment_methods, only: %i[index show create update destroy]
