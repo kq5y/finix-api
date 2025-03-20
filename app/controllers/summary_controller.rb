@@ -3,14 +3,14 @@ class SummaryController < ApplicationController
   before_action :authenticate_request, only: %i[index]
 
   def index
-    render json: {
-      overview: calculate_overview,
-      trends: calculate_trends,
-      categories: calculate_categories,
-      payment_methods: calculate_payment_methods,
-      locations: calculate_locations,
-      recent_expenditures: fetch_recent_expenditures
-    }
+    render_success({
+                     overview: calculate_overview,
+                     trends: calculate_trends,
+                     categories: calculate_categories,
+                     payment_methods: calculate_payment_methods,
+                     locations: calculate_locations,
+                     recent_expenditures: fetch_recent_expenditures
+                   })
   end
 
   private
@@ -211,23 +211,9 @@ class SummaryController < ApplicationController
         date: expenditure.date.strftime("%Y-%m-%d"),
         amount: expenditure.amount.to_i,
         description: expenditure.description,
-        category: expenditure.category&.then do |c|
-          {
-            name: c.name,
-            color: c.color
-          }
-        end,
-        location: expenditure.location&.then do |l|
-          {
-            name: l.name
-          }
-        end,
-        payment: expenditure.payment_method&.then do |p|
-          {
-            name: p.name,
-            payment_type: p.payment_type
-          }
-        end
+        category: expenditure.category,
+        location: expenditure.location,
+        payment: expenditure.payment_method
       }.compact
     end
   end
