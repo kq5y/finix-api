@@ -211,23 +211,9 @@ class SummaryController < ApplicationController
         date: expenditure.date.strftime("%Y-%m-%d"),
         amount: expenditure.amount.to_i,
         description: expenditure.description,
-        category: expenditure.category&.then do |c|
-          {
-            name: c.name,
-            color: c.color
-          }
-        end,
-        location: expenditure.location&.then do |l|
-          {
-            name: l.name
-          }
-        end,
-        payment: expenditure.payment_method&.then do |p|
-          {
-            name: p.name,
-            payment_type: p.payment_type
-          }
-        end
+        category: expenditure.category,
+        location: expenditure.location,
+        payment: expenditure.payment_method
       }.compact
     end
   end
