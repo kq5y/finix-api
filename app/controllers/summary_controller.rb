@@ -90,6 +90,7 @@ class SummaryController < ApplicationController
       total = @user.expenditures
                    .where(date: start_date..end_date)
                    .select("COALESCE(SUM(amount), 0) as total, COUNT(*) as count")
+                   .order(nil)
                    .first
       {
         date: month_str,
@@ -112,6 +113,7 @@ class SummaryController < ApplicationController
       total = @user.expenditures
                    .where(date: start_date..end_date)
                    .select("COALESCE(SUM(amount), 0) as total, COUNT(*) as count")
+                   .order(nil)
                    .first
       {
         date: week_str,
