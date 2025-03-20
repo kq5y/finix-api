@@ -20,15 +20,24 @@ class SummaryController < ApplicationController
   end
 
   def year_summary
-    @year_summary ||= current_year_expenditures
-                      .select(
-                        "COUNT(*) as total_items",
-                        "COALESCE(SUM(amount), 0) as total_amount",
-                        "COALESCE(AVG(amount), 0) as avg_amount",
-                        "COALESCE(MAX(amount), 0) as max_amount",
-                        "COALESCE(MIN(amount), 0) as min_amount"
-                      )
-                      .first
+    @year_summary ||= begin
+      data = current_year_expenditures
+             .pick(
+               Arel.sql("COUNT(*) as total_items"),
+               Arel.sql("COALESCE(SUM(amount), 0) as total_amount"),
+               Arel.sql("COALESCE(AVG(amount), 0) as avg_amount"),
+               Arel.sql("COALESCE(MAX(amount), 0) as max_amount"),
+               Arel.sql("COALESCE(MIN(amount), 0) as min_amount")
+             ) || [0, 0, 0, 0, 0]
+
+      {
+        total_items: data[0],
+        total_amount: data[1],
+        avg_amount: data[2],
+        max_amount: data[3],
+        min_amount: data[4]
+      }
+    end
   end
 
   def current_year_expenditures
@@ -54,11 +63,11 @@ class SummaryController < ApplicationController
                                 end
 
     {
-      totalItems: year_summary.total_items,
-      totalAmount: year_summary.total_amount.to_i,
-      averageAmount: year_summary.avg_amount.to_i,
-      largestAmount: year_summary.max_amount.to_i,
-      smallestAmount: year_summary.min_amount.to_i,
+      totalItems: year_summary[:total_items],
+      totalAmount: year_summary[:total_amount].to_i,
+      averageAmount: year_summary[:avg_amount].to_i,
+      largestAmount: year_summary[:max_amount].to_i,
+      smallestAmount: year_summary[:min_amount].to_i,
       monthlyChange: monthly_change.to_i,
       monthlyChangePercentage: monthly_change_percentage
     }
