@@ -213,7 +213,7 @@ class SummaryController < ApplicationController
         description: expenditure.description,
         category: expenditure.category,
         location: expenditure.location,
-        payment: expenditure.payment_method
+        payment_method: expenditure.payment_method
       }.compact
     end
   end
